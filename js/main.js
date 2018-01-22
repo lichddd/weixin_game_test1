@@ -21,10 +21,15 @@ export default class Main {
     this.bg = new BackGround();
     this.stage.addChild(this.bg);
     // this.restart()
+    this.TimerHandel();
   }
   TimerHandel() {
     this.bg.update();
     this.stage.update();
+    window.requestAnimationFrame(
+      this.TimerHandel.bind(this),
+      canvas
+    )
   }  
   restart() {
     databus.reset()
