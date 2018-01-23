@@ -1,5 +1,7 @@
 import Player     from './player/index'
+import Player2 from './player/index2'
 import Enemy      from './npc/enemy'
+import Enemy2 from './npc/enemy2'
 import BackGround from './runtime/background2'
 import GameInfo   from './runtime/gameinfo'
 import Music      from './runtime/music'
@@ -14,17 +16,34 @@ const screenHeight = window.innerHeight
  */
 export default class Main {
   constructor() {
+
+    this.frame=0;
+
+
     createjs.Ticker.timingMode = createjs.Ticker.RAF_SYNCHED;
-    createjs.Ticker.addEventListener("tick", this.TimerHandel.bind(this));
+    // createjs.Ticker.addEventListener("tick", this.TimerHandel.bind(this));
     this.stage = new createjs.Stage(canvas);  
     // this.stage.updateViewport(screenWidth, screenHeight);
     this.bg = new BackGround();
+    this.enemy = new Enemy2();
+    this.player = new Player2();
     this.stage.addChild(this.bg);
+    this.stage.addChild(this.enemy);
+    this.stage.addChild(this.player);
     // this.restart()
     this.TimerHandel();
   }
   TimerHandel() {
+    this.frame++;
+    if(this.frame>999999999){
+      this.frame=0;
+    }
+    if (this.frame%20===0) {
+      this.enemy.init(3, (this.frame / 20)%5);
+    }
     this.bg.update();
+    this.player.update();
+    this.enemy.update();
     this.stage.update();
     window.requestAnimationFrame(
       this.TimerHandel.bind(this),

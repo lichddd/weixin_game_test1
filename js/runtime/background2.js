@@ -14,21 +14,31 @@ const BG_HEIGHT = 512
 export default class BackGround extends createjs.Container {
   constructor() {
     super();
-    var tempBitMap = new createjs.Bitmap(BG_IMG_SRC);
-    tempBitMap.x = 0;
-    tempBitMap.y = 0;
-    tempBitMap.scaleX = (screenWidth / BG_WIDTH);
-    tempBitMap.scaleY = (screenHeight / BG_HEIGHT);
-    this.addChild(tempBitMap);
+    this.spriteSheet = new createjs.SpriteSheet({
+      images: [BG_IMG_SRC],
+      frames: { width: BG_WIDTH, height: BG_HEIGHT, regX:0, regY:0 },
+      animations: {
+        // play: [0,0,"play",0.2]
+      }
+    });
+    let sprite = new createjs.Sprite(this.spriteSheet, "play");
 
+    sprite.y = 0;
+    sprite.x = 0;
+    sprite.scaleX = (screenWidth / BG_WIDTH);
+    sprite.scaleY = (screenHeight / BG_HEIGHT);
 
-    var tempBitMap = new createjs.Bitmap(BG_IMG_SRC);
-    tempBitMap.x = 0;
-    tempBitMap.y = -screenHeight;
-    tempBitMap.scaleX = (screenWidth/BG_WIDTH);
-    tempBitMap.scaleY = (screenHeight / BG_HEIGHT);
-    this.addChild(tempBitMap);
-    this.top = 0
+    this.addChild(sprite);
+
+    sprite = new createjs.Sprite(this.spriteSheet, "play");
+
+    sprite.y = - screenHeight;
+    sprite.x = 0;
+    sprite.scaleX = (screenWidth / BG_WIDTH);
+    sprite.scaleY = (screenHeight / BG_HEIGHT);
+
+    this.addChild(sprite);
+    this.y=0;
   }
 
   update() {
