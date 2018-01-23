@@ -5,4 +5,4 @@ import './js/libs/ease'
 
 import Main from './js/main'
 
-new Main()
+window.main = new Main();

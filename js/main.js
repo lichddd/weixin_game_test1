@@ -16,7 +16,7 @@ const screenHeight = window.innerHeight
  */
 export default class Main {
   constructor() {
-
+    wx.setPreferredFramesPerSecond(30);
     this.frame=0;
 
 
@@ -26,7 +26,7 @@ export default class Main {
     // this.stage.updateViewport(screenWidth, screenHeight);
     this.bg = new BackGround();
     this.enemy = new Enemy2();
-    this.player = new Player2();
+    this.player = new Player2(5);
     this.stage.addChild(this.bg);
     this.stage.addChild(this.enemy);
     this.stage.addChild(this.player);
@@ -38,18 +38,69 @@ export default class Main {
     if(this.frame>999999999){
       this.frame=0;
     }
-    if (this.frame%20===0) {
-      this.enemy.init(3, (this.frame / 20)%5);
+    if (this.frame%10===0) {
+      this.enemy.init(3, (this.frame / 20)%5,20);
+    }
+    if (this.frame % 10 === 0) {
+      this.player.shoot();
     }
     this.bg.update();
     this.player.update();
     this.enemy.update();
     this.stage.update();
+    this.collisionDetection2();
     window.requestAnimationFrame(
       this.TimerHandel.bind(this),
       canvas
     )
   }  
+
+  isCollideWith(rectObj,pointObj) {
+    let spX = pointObj.x;
+    let spY = pointObj.y;
+
+    // if (!this.visible || !pointObj.visible)
+    //   return false
+
+    return !!(spX >= rectObj.x - rectObj.width / 2
+      && spX <= rectObj.x + rectObj.width / 2
+      && spY >= rectObj.y - rectObj.height / 2
+      && spY <= rectObj.y + rectObj.height / 2)
+  }
+  collisionDetection2() {
+    let that = this;
+
+    this.player.bullet.list.filter((bu) => {
+      let r=true;
+      this.enemy.list = this.enemy.list.filter((ene) => {
+
+        if ( this.isCollideWith(bu, ene)) {
+          ene.die();
+          bu.die();
+          r = false;
+          return false;
+
+          // databus.score += 1
+        }
+        return true;
+        
+      });
+
+      return r;
+    })
+
+    for (let i = 0, il = databus.enemys.length; i < il; i++) {
+      let enemy = databus.enemys[i]
+
+      if (this.player.isCollideWith(enemy)) {
+        databus.gameOver = true
+
+        break
+      }
+    }
+  }
+
+
   restart() {
     databus.reset()
 

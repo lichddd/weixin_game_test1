@@ -1,7 +1,6 @@
 import Sprite from '../base/sprite'
-import Bullet from './bullet'
 import DataBus from '../databus'
-
+import Bullet from './bullet2'
 const screenWidth = window.innerWidth
 const screenHeight = window.innerHeight
 
@@ -13,7 +12,7 @@ const PLAYER_HEIGHT = 130
 let databus = new DataBus()
 
 export default class Player extends createjs.Container {
-  constructor() {
+  constructor(shootnum) {
     super();
     this.spriteSheetPlayer = new createjs.SpriteSheet({
       images: [PLAYER_IMG_SRC],
@@ -34,12 +33,12 @@ export default class Player extends createjs.Container {
     this.player.height = PLAYER_HEIGHT*0.3;
     this.addChild(this.player);
 
-
+    this.bullet = new Bullet(this);
     // 用于在手指移动的时候标识手指是否已经在飞机上了
     this.touched = false
 
     this.bullets = []
-
+    this.shootnum=shootnum;
     // 初始化事件监听
     this.initEvent();
     wx.startAccelerometer({ success:()=>{console.log('开始监听加速计')}});
@@ -53,6 +52,7 @@ export default class Player extends createjs.Container {
     this.player.x += this.player.speedx;
     this.player.y += this.player.speedy;
     this.setAirPosAcrossFingerPosZ(this.player.x, this.player.y);
+    this.bullet.update();
   }
   /**
    * 当手指触摸屏幕的时候
@@ -140,14 +140,6 @@ export default class Player extends createjs.Container {
    * 射击时机由外部决定
    */
   shoot() {
-    let bullet = databus.pool.getItemByClass('bullet', Bullet)
-
-    bullet.init(
-      this.x + this.width / 2 - bullet.width / 2,
-      this.y - 10,
-      10
-    )
-
-    databus.bullets.push(bullet)
+    this.bullet.shoot(4,this.player.x,this.player.y,this.shootnum);
   }
 }
