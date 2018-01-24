@@ -1,5 +1,4 @@
-import Sprite from '../base/sprite'
-import DataBus from '../databus'
+
 import Bullet from './bullet2'
 const screenWidth = window.innerWidth
 const screenHeight = window.innerHeight
@@ -9,11 +8,10 @@ const PLAYER_IMG_SRC = 'images/hero.png'
 const PLAYER_WIDTH = 186
 const PLAYER_HEIGHT = 130
 
-let databus = new DataBus()
 
-export default class Player extends createjs.Container {
-  constructor(shootnum) {
-    super();
+export default class Player{
+  constructor(cantiner,shootnum=10) {
+    this.cantiner = cantiner;
     this.spriteSheetPlayer = new createjs.SpriteSheet({
       images: [PLAYER_IMG_SRC],
       frames: { width: PLAYER_WIDTH, height: PLAYER_HEIGHT, regX: PLAYER_WIDTH / 2, regY: PLAYER_HEIGHT / 2 },
@@ -31,9 +29,9 @@ export default class Player extends createjs.Container {
     this.player.scaleY = 0.3;
     this.player.width = PLAYER_WIDTH*0.3;
     this.player.height = PLAYER_HEIGHT*0.3;
-    this.addChild(this.player);
+    this.cantiner.addChild(this.player);
 
-    this.bullet = new Bullet(this);
+    this.bullet = new Bullet(this.cantiner);
     // 用于在手指移动的时候标识手指是否已经在飞机上了
     this.touched = false
 
@@ -48,11 +46,11 @@ export default class Player extends createjs.Container {
       this.player.speedy = Math.floor(-res.y * 100)/10;
     })
   }
-  update(){
+  update(test){
     this.player.x += this.player.speedx;
     this.player.y += this.player.speedy;
     this.setAirPosAcrossFingerPosZ(this.player.x, this.player.y);
-    this.bullet.update();
+    this.bullet.update(test);
   }
   /**
    * 当手指触摸屏幕的时候

@@ -1,3 +1,5 @@
+const PIp2 = Math.PI / 2;
+
 const ENEMY_IMG_SRC = 'images/enemy.png'
 const ENEMY_DIE_IMG_SRCs = [
   'images/explosion1.png',
@@ -24,10 +26,9 @@ const ENEMY_WIDTH = 120
 const ENEMY_HEIGHT = 79
 const SCALE = 0.4 
 const SCALE_TO_DIE = 2 
-export default class Enemy extends createjs.Container {
-  constructor() {
-    super();
-
+export default class Enemy {
+  constructor(cantiner) {
+    this.cantiner=cantiner;
     this.spriteSheet = new createjs.SpriteSheet({
       images: [ENEMY_IMG_SRC, ...ENEMY_DIE_IMG_SRCs],
       frames:
@@ -65,7 +66,7 @@ export default class Enemy extends createjs.Container {
   }
   init(speed, ang, num) {
     for (let i = 0; i < num; i++) {
-      let sprite = new createjs.Sprite(this.spriteSheet, "play");
+      let sprite = this.deletelist.length > 0 ? this.deletelist.shift() : new createjs.Sprite(this.spriteSheet, "play");
 
       sprite.y = 20;
       sprite.x = window.innerWidth / 2;
@@ -76,47 +77,48 @@ export default class Enemy extends createjs.Container {
       sprite.speed = speed;
       sprite.isdie=false;
       sprite.diecount=0;
-      sprite.die = () => {
+      sprite.die = sprite.die||(() => {
             sprite.isdie=true;
             sprite.gotoAndPlay('die');
             sprite.scaleX = SCALE * SCALE_TO_DIE;
             sprite.scaleY = SCALE * SCALE_TO_DIE;
-      };
-      this.addChild(sprite);
+      });
+      this.deletelist.length > 0 ? (sprite.visible = true,sprite.gotoAndPlay('play')) : this.cantiner.addChild(sprite);
       this.list.push(sprite);
     }
 
   }
 
-  update() {
-    // for (let i = 0; i < this.list.length; i++) {
-    //   let s = this.list[i];
-    //   s.y += Math.cos(s.angel * Math.PI / 2) * s.speed;
-    //   s.x += Math.sin(s.angel * Math.PI / 2) * s.speed;
+  update(test) {
 
-    //   if (s.y > window.innerHeight + 200 || s.y > window.innerWidth + 100 || s.y < -100) {
-    //     this.deletelist.push(i);
-    //   }
-    // }
     this.list = this.list.filter((s) => {
       if(s.isdie)
       {
         s.diecount++;
+        if(s.diecount<5)
+        {
+          s.y += Math.cos(s.angel * PIp2) * s.speed;
+          s.x += Math.sin(s.angel * PIp2) * s.speed;
+        }
         if(s.diecount>(19*2))
         {
-          this.removeChild(s);
+          this.deletelist.push(s);
+          s.visible = false;
           return false;
         }
         return true;
       }
-      s.y += Math.cos(s.angel * Math.PI / 2) * s.speed;
-      s.x += Math.sin(s.angel * Math.PI / 2) * s.speed;
+      s.y += Math.cos(s.angel * PIp2) * s.speed;
+      s.x += Math.sin(s.angel * PIp2) * s.speed;
 
-      if (s.y > window.innerHeight + 200 || s.x > window.innerWidth + 100 || s.x < -100) {
-        this.removeChild(s);
+      if(test)
+      {
+      if (s.y > window.innerHeight || s.x > window.innerWidth || s.x < 0) {
+        this.deletelist.push(s);
+        s.visible = false;
         return false;
       }
-
+      }
       return true;
     });
 

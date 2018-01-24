@@ -1,4 +1,4 @@
-import Sprite from '../base/sprite'
+
 
 const screenWidth = window.innerWidth
 const screenHeight = window.innerHeight
@@ -11,9 +11,9 @@ const BG_HEIGHT = 512
  * 游戏背景类
  * 提供update和render函数实现无限滚动的背景功能
  */
-export default class BackGround extends createjs.Container {
-  constructor() {
-    super();
+export default class BackGround {
+  constructor(cantiner) {
+    this.cantiner=cantiner;
     this.spriteSheet = new createjs.SpriteSheet({
       images: [BG_IMG_SRC],
       frames: { width: BG_WIDTH, height: BG_HEIGHT, regX:0, regY:0 },
@@ -21,31 +21,34 @@ export default class BackGround extends createjs.Container {
         // play: [0,0,"play",0.2]
       }
     });
-    let sprite = new createjs.Sprite(this.spriteSheet, "play");
+    this.sprite1 = new createjs.Sprite(this.spriteSheet, "play");
 
-    sprite.y = 0;
-    sprite.x = 0;
-    sprite.scaleX = (screenWidth / BG_WIDTH);
-    sprite.scaleY = (screenHeight / BG_HEIGHT);
+    this.sprite1.y = 0;
+    this.sprite1.x = 0;
+    this.sprite1.scaleX = (screenWidth / BG_WIDTH);
+    this.sprite1.scaleY = (screenHeight / BG_HEIGHT);
 
-    this.addChild(sprite);
+    this.cantiner.addChild(this.sprite1);
 
-    sprite = new createjs.Sprite(this.spriteSheet, "play");
+    this.sprite2 = new createjs.Sprite(this.spriteSheet, "play");
 
-    sprite.y = - screenHeight;
-    sprite.x = 0;
-    sprite.scaleX = (screenWidth / BG_WIDTH);
-    sprite.scaleY = (screenHeight / BG_HEIGHT);
+    this.sprite2.y = - screenHeight;
+    this.sprite2.x = 0;
+    this.sprite2.scaleX = (screenWidth / BG_WIDTH);
+    this.sprite2.scaleY = (screenHeight / BG_HEIGHT);
 
-    this.addChild(sprite);
-    this.y=0;
+    this.cantiner.addChild(this.sprite2);
   }
 
   update() {
-    this.y += 2
+    this.sprite1.y += 2;
+    this.sprite2.y += 2;
 
-    if (this.y >= screenHeight)
-      this.y = 0
+    if (this.sprite1.y >= screenHeight)
+    {
+      this.sprite1.y = 0;
+      this.sprite2.y = - screenHeight;
+    }
   }
 
 }

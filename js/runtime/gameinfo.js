@@ -5,6 +5,14 @@ let atlas = new Image()
 atlas.src = 'images/Common.png'
 
 export default class GameInfo {
+  constructor(cantiner){
+    this.cantiner=cantiner;
+    this.score = new createjs.Text(`得分:0`, "16px  Arial", "#FFF");
+    this.score.x = (10);
+    this.score.y = (10);
+    this.cantiner.addChild(this.score);
+
+  }
   renderGameScore(ctx, score) {
     ctx.fillStyle = "#ffffff"
     ctx.font      = "20px Arial"
@@ -15,7 +23,11 @@ export default class GameInfo {
       30
     )
   }
+  updateScore(s){
 
+    this.score.text = `得分:${s}`;
+
+  }
   renderGameOver(ctx, score) {
     ctx.drawImage(atlas, 0, 0, 119, 108, screenWidth / 2 - 150, screenHeight / 2 - 100, 300, 300)
 
