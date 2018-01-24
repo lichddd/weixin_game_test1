@@ -26,7 +26,7 @@ export default class Main {
     // this.stage.updateViewport(screenWidth, screenHeight);
     this.bg = new BackGround();
     this.enemy = new Enemy2();
-    this.player = new Player2(5);
+    this.player = new Player2(10);
     this.stage.addChild(this.bg);
     this.stage.addChild(this.enemy);
     this.stage.addChild(this.player);
@@ -72,17 +72,15 @@ export default class Main {
 
     this.player.bullet.list.filter((bu) => {
       let r=true;
-      this.enemy.list = this.enemy.list.filter((ene) => {
+      this.enemy.list.forEach((ene) => {
 
-        if ( this.isCollideWith(bu, ene)) {
+        if ( this.isCollideWith(bu, ene)&&!ene.isdie) {
           ene.die();
           bu.die();
           r = false;
-          return false;
 
           // databus.score += 1
         }
-        return true;
         
       });
 
