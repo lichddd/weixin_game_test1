@@ -26,8 +26,8 @@ export default class Bullet {
     for (let i = 0; i < num; i++) {
       let sprite = this.deletelist.length > 0 ? this.deletelist.shift():new createjs.Sprite(this.spriteSheet, "play");
 
-      sprite.y = y-20;
-      sprite.x = x;
+      sprite.y = y-20+Math.floor(Math.random()*10);
+      sprite.x = x + Math.floor(Math.random() * 20 -10);
       sprite.scaleX = 0.2;
       sprite.scaleY = 0.2;
       sprite.width = BULLET_WIDTH * 0.3;
@@ -54,9 +54,9 @@ export default class Bullet {
   }
   update(test) {
     this.list = this.list.filter((s) => {
-
-      s.y -= Math.cos(s.angel * PIp2) * s.speed;
-      s.x += Math.sin(s.angel * PIp2) * s.speed;
+      s.y -= s.speed;
+      // s.y -= Math.cos(s.angel * PIp2) * s.speed;
+      // s.x += Math.sin(s.angel * PIp2) * s.speed;
 
       if(test)
       {

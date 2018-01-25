@@ -20,7 +20,7 @@ export default class Main {
     // this.music.playBgm();
     createjs.Ticker.timingMode = createjs.Ticker.RAF_SYNCHED;
     // createjs.Ticker.addEventListener("tick", this.TimerHandel.bind(this));
-    this.stage = new createjs.Stage(canvas);  
+    this.stage = new createjs.Stage(canvas);
     // this.stage.updateViewport(screenWidth, screenHeight);
     this.bg = new BackGround(this.stage);
     this.enemy = new Enemy2(this.stage);
@@ -54,7 +54,7 @@ export default class Main {
       this.TimerHandel.bind(this),
       canvas
     )
-  }  
+  }
 
   isCollideWith(rectObj,pointObj) {
     let spX = pointObj.x;
@@ -81,9 +81,9 @@ export default class Main {
           r = false;
 
           this.score += 1
-          
+
         }
-        
+
       });
 
       return r;
