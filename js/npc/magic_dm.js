@@ -37,7 +37,7 @@ export default class Enemy {
       sprite.scaleY = SCALE;
       sprite.width = ENEMY_WIDTH * SCALE;
       sprite.height = ENEMY_HEIGHT * SCALE;
-      sprite.angel = (i - num / 2+ 0.5) / num+ang ;
+      sprite.angel = 2*i/num - 1 + 1/num +ang;
       sprite.speed = speed;
       sprite.isdie=false;
       sprite.diecount=0;
@@ -59,14 +59,20 @@ export default class Enemy {
       if(s.isdie)
       {
         s.diecount++;
-        if(s.diecount<5)
-        {
-          s.y += Math.cos(s.angel * PIp2) * s.speed;
-          s.x += Math.sin(s.angel * PIp2) * s.speed;
-        }
-        if(s.diecount>(19*2))
+        // if(s.diecount<5)
+        // {
+        //   s.y += Math.cos(s.angel * PIp2) * s.speed;
+        //   s.x += Math.sin(s.angel * PIp2) * s.speed;
+        // }
+        s.alpha=(35-s.diecount%35)/35;
+        s.scaleX = (s.scaleX+0.05);
+        s.scaleY = (s.scaleY+0.05);
+        if(s.diecount>(30))
         {
           this.deletelist.push(s);
+          s.alpha=1;
+          s.scaleX =SCALE;
+          s.scaleY = SCALE;
           s.visible = false;
           return false;
         }
@@ -74,7 +80,7 @@ export default class Enemy {
       }
       s.y += Math.cos(s.angel * PIp2) * s.speed;
       s.x += Math.sin(s.angel * PIp2) * s.speed;
-
+      s.rotation=(s.rotation+2>=360)?0:s.rotation+2;
       if(test)
       {
       if (s.y > window.innerHeight + 100 || s.x > window.innerWidth + 100 || s.x < -100) {

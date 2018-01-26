@@ -27,7 +27,7 @@ export default class Main {
     this.stage.addChild(this.bg);
     this.player = new Player(this.stage,10);
     this.stage.addChild(this.player);
-    this.boss = new Boss(this.stage,16);
+    this.boss = new Boss(this.stage,30);
     this.stage.addChild(this.boss);
     this.gameinfo =new GameInfo(this.stage);
     this.stage.addChild(this.gameinfo);
@@ -41,11 +41,14 @@ export default class Main {
     if(this.frame>999999999){
       this.frame=0;
     }
-    if (this.frame%30===0) {
+    if (this.frame%20===0) {
       this.boss.shoot();
     }
     if (this.frame%60===0) {
       this.boss.shoot_magic();
+    }
+    if (this.frame%120===0) {
+      this.boss.shoot_beam();
     }
     if (this.frame % 30 === 0) {
       this.player.shoot();
@@ -93,6 +96,12 @@ export default class Main {
       }
     })
     this.boss.magic_dm.list.filter((bu) => {
+      if ( this.isCollideWith(bu,pp)&&!bu.isdie) {
+        bu.die();
+        this.defance += 1;
+      }
+    })
+    this.boss.beam.list.filter((bu) => {
       if ( this.isCollideWith(bu,pp)&&!bu.isdie) {
         bu.die();
         this.defance += 1;

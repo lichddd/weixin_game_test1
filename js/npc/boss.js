@@ -1,13 +1,14 @@
 
 import Bullet from './enemy'
 import Magic_DM from './magic_dm'
+import Beam from './beam'
 const screenWidth = window.innerWidth
 const screenHeight = window.innerHeight
 
 // 玩家相关常量设置
-const PLAYER_IMG_SRC = 'images/enemy.png'
-const PLAYER_WIDTH = 120
-const PLAYER_HEIGHT = 79
+const PLAYER_IMG_SRC = 'images/boss.png'
+const PLAYER_WIDTH = 80
+const PLAYER_HEIGHT = 110
 
 
 export default class Boss extends createjs.Container {
@@ -16,9 +17,21 @@ export default class Boss extends createjs.Container {
     this.cantiner = this;
     this.spriteSheetPlayer = new createjs.SpriteSheet({
       images: [PLAYER_IMG_SRC],
-      frames: { width: PLAYER_WIDTH, height: PLAYER_HEIGHT, regX: PLAYER_WIDTH / 2, regY: PLAYER_HEIGHT / 2 },
+      frames: [
+        [2, 0, PLAYER_WIDTH, PLAYER_HEIGHT, 0, PLAYER_WIDTH / 2, PLAYER_HEIGHT / 2],
+        [81, 0, PLAYER_WIDTH, PLAYER_HEIGHT, 0, PLAYER_WIDTH / 2, PLAYER_HEIGHT / 2],
+        [161, 0, PLAYER_WIDTH, PLAYER_HEIGHT, 0, PLAYER_WIDTH / 2, PLAYER_HEIGHT / 2],
+        [241, 0, PLAYER_WIDTH, PLAYER_HEIGHT, 0, PLAYER_WIDTH / 2, PLAYER_HEIGHT / 2],
+
+
+        [0, 110, PLAYER_WIDTH, PLAYER_HEIGHT, 0, PLAYER_WIDTH / 2, PLAYER_HEIGHT / 2],
+        [80, 110, PLAYER_WIDTH, PLAYER_HEIGHT, 0, PLAYER_WIDTH / 2, PLAYER_HEIGHT / 2],
+        [160, 110, PLAYER_WIDTH, PLAYER_HEIGHT, 0, PLAYER_WIDTH / 2, PLAYER_HEIGHT / 2],
+        [240, 110, PLAYER_WIDTH, PLAYER_HEIGHT, 0, PLAYER_WIDTH / 2, PLAYER_HEIGHT / 2],
+      ],
       animations: {
-        // play: [0,0,"play",0.2]
+        play: [0,3,"play",4/30],
+        shoot: [4,7,"play",8/30],
       }
     });
     this.player = new createjs.Sprite(this.spriteSheetPlayer, "play");
@@ -35,6 +48,7 @@ export default class Boss extends createjs.Container {
 
     this.bullet = new Bullet(this.cantiner);
     this.magic_dm = new Magic_DM(this.cantiner);
+    this.beam = new Beam(this.cantiner);
     // 用于在手指移动的时候标识手指是否已经在飞机上了
 
     this.shootnum=shootnum;
@@ -45,16 +59,22 @@ export default class Boss extends createjs.Container {
     this.player.y += this.player.speedy;
     this.bullet.update(test);
     this.magic_dm.update(test);
+    this.beam.update(test);
   }
 
 
 
 
-
+  shoot_beam() {
+    // this.player.gotoAndPlay('shoot');
+    this.beam.shoot(this.player.x,this.player.y+30,10,window.main.frame%40/200-0.05,this.shootnum/5);
+  }
   shoot() {
-    this.bullet.shoot(this.player.x,this.player.y+30,4,window.main.frame%60/300-0.05,this.shootnum);
+    // this.player.gotoAndPlay('shoot');
+    this.bullet.shoot(this.player.x,this.player.y+30,4,window.main.frame%40/200-0.05,this.shootnum);
   }
   shoot_magic() {
+    this.player.gotoAndPlay('shoot');
     this.magic_dm.shoot(this.player.x,this.player.y+30,2,window.main.frame%120/600-0.05,Math.ceil(this.shootnum/2));
   }
 }
