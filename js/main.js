@@ -1,7 +1,7 @@
 
-import Player2 from './player/index2'
-import Enemy2 from './npc/enemy2'
-import BackGround from './runtime/background2'
+import Player from './player/index'
+import Boss from './npc/boss'
+import BackGround from './runtime/background'
 import GameInfo   from './runtime/gameinfo'
 import Music      from './runtime/music'
 
@@ -16,6 +16,7 @@ export default class Main {
     wx.setPreferredFramesPerSecond(60);
     this.frame=0;
     this.score=0;
+    this.defance=0;
     this.music= new Music();
     // this.music.playBgm();
     createjs.Ticker.timingMode = createjs.Ticker.RAF_SYNCHED;
@@ -23,12 +24,15 @@ export default class Main {
     this.stage = new createjs.Stage(canvas);
     // this.stage.updateViewport(screenWidth, screenHeight);
     this.bg = new BackGround(this.stage);
-    this.enemy = new Enemy2(this.stage);
-    this.player = new Player2(this.stage,20);
+    this.stage.addChild(this.bg);
+    this.player = new Player(this.stage,10);
+    this.stage.addChild(this.player);
+    this.boss = new Boss(this.stage,16);
+    this.stage.addChild(this.boss);
     this.gameinfo =new GameInfo(this.stage);
-    // this.stage.addChild(this.bg);
-    // this.stage.addChild(this.enemy);
-    // this.stage.addChild(this.player);
+    this.stage.addChild(this.gameinfo);
+
+
     // this.restart()
     this.TimerHandel();
   }
@@ -37,19 +41,22 @@ export default class Main {
     if(this.frame>999999999){
       this.frame=0;
     }
-    if (this.frame%10===0) {
-      this.enemy.init(3, (this.frame / 20)%5,50);
+    if (this.frame%30===0) {
+      this.boss.shoot();
     }
-    if (this.frame % 10 === 0) {
+    if (this.frame%60===0) {
+      this.boss.shoot_magic();
+    }
+    if (this.frame % 30 === 0) {
       this.player.shoot();
       this.music.playShoot();
     }
     this.bg.update();
-    this.player.update(this.frame % 30 === 0);
-    this.enemy.update(this.frame % 30 === 0);
+    this.player.update(true);
+    this.boss.update(true);
     this.collisionDetection2();
     this.stage.update();
-    this.gameinfo.updateScore(this.score);
+    this.gameinfo.updateScore(this.score,this.defance);
     window.requestAnimationFrame(
       this.TimerHandel.bind(this),
       canvas
@@ -70,23 +77,26 @@ export default class Main {
   }
   collisionDetection2() {
     let that = this;
+    let pp={x:this.player.player.x,y:this.player.player.y};
+    let br={x:this.boss.player.x,y:this.boss.player.y,width:this.boss.player.width,height:this.boss.player.height};
 
     this.player.bullet.list.filter((bu) => {
-      let r=true;
-      this.enemy.list.forEach((ene) => {
-
-        if ( this.isCollideWith(bu, ene)&&!ene.isdie) {
-          ene.die();
-          bu.die();
-          r = false;
-
-          this.score += 1
-
-        }
-
-      });
-
-      return r;
+      if ( this.isCollideWith(br,bu)&&!bu.isdie) {
+        bu.die();
+        this.score += 1;
+      }
+    });
+    this.boss.bullet.list.filter((bu) => {
+      if ( this.isCollideWith(bu,pp)&&!bu.isdie) {
+        bu.die();
+        this.defance += 1;
+      }
+    })
+    this.boss.magic_dm.list.filter((bu) => {
+      if ( this.isCollideWith(bu,pp)&&!bu.isdie) {
+        bu.die();
+        this.defance += 1;
+      }
     })
   }
 

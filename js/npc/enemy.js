@@ -24,8 +24,8 @@ const ENEMY_DIE_IMG_SRCs = [
 ]
 const ENEMY_WIDTH = 120
 const ENEMY_HEIGHT = 79
-const SCALE = 0.4 
-const SCALE_TO_DIE = 2 
+const SCALE = 0.2
+const SCALE_TO_DIE = 2
 export default class Enemy {
   constructor(cantiner) {
     this.cantiner=cantiner;
@@ -64,16 +64,18 @@ export default class Enemy {
     this.y = 0;
     this.x = 0;
   }
-  init(speed, ang, num) {
+  shoot(x,y,speed, ang, num) {
     for (let i = 0; i < num; i++) {
-      let sprite = this.deletelist.length > 0 ? this.deletelist.shift() : new createjs.Sprite(this.spriteSheet, "play");
+      let isnew = true;
+      let sprite = this.deletelist.length > 0 ? (isnew=false,this.deletelist.shift()) : new createjs.Sprite(this.spriteSheet, "play");
 
-      sprite.y = 20;
-      sprite.x = window.innerWidth / 2;
+      sprite.y = y;
+      sprite.x = x;
       sprite.scaleX = SCALE;
       sprite.scaleY = SCALE;
-
-      sprite.angel = (i - num / 2 + ang / 5) / num;
+      sprite.width = ENEMY_WIDTH * SCALE;
+      sprite.height = ENEMY_HEIGHT * SCALE;
+      sprite.angel = (i - num / 2 + 0.5) / num +ang;
       sprite.speed = speed;
       sprite.isdie=false;
       sprite.diecount=0;
@@ -83,7 +85,7 @@ export default class Enemy {
             sprite.scaleX = SCALE * SCALE_TO_DIE;
             sprite.scaleY = SCALE * SCALE_TO_DIE;
       });
-      this.deletelist.length > 0 ? (sprite.visible = true,sprite.gotoAndPlay('play')) : this.cantiner.addChild(sprite);
+      !isnew ? (sprite.visible = true,sprite.gotoAndPlay('play')) : this.cantiner.addChild(sprite);
       this.list.push(sprite);
     }
 
@@ -113,7 +115,7 @@ export default class Enemy {
 
       if(test)
       {
-      if (s.y > window.innerHeight || s.x > window.innerWidth || s.x < 0) {
+      if (s.y > window.innerHeight + 100 || s.x > window.innerWidth + 100 || s.x < -100) {
         this.deletelist.push(s);
         s.visible = false;
         return false;

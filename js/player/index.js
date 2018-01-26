@@ -1,5 +1,5 @@
 
-import Bullet from './bullet2'
+import Bullet from './bullet'
 const screenWidth = window.innerWidth
 const screenHeight = window.innerHeight
 
@@ -9,9 +9,10 @@ const PLAYER_WIDTH = 186
 const PLAYER_HEIGHT = 130
 
 
-export default class Player{
+export default class Player extends createjs.Container {
   constructor(cantiner,shootnum=10) {
-    this.cantiner = cantiner;
+    super();
+    this.cantiner = this;
     this.spriteSheetPlayer = new createjs.SpriteSheet({
       images: [PLAYER_IMG_SRC],
       frames: { width: PLAYER_WIDTH, height: PLAYER_HEIGHT, regX: PLAYER_WIDTH / 2, regY: PLAYER_HEIGHT / 2 },
@@ -35,13 +36,12 @@ export default class Player{
     // 用于在手指移动的时候标识手指是否已经在飞机上了
     this.touched = false
 
-    this.bullets = []
     this.shootnum=shootnum;
     // 初始化事件监听
     this.initEvent();
     wx.startAccelerometer({ success:()=>{console.log('开始监听加速计')}});
     wx.onAccelerometerChange((res)=>{
-      
+
       this.player.speedx = Math.floor(res.x*100)/10;
       this.player.speedy = Math.floor(-res.y * 100)/10;
     })
@@ -77,8 +77,8 @@ export default class Player{
     // let disX = x - this.player.width / 2
     // let disY = y - this.player.height / 2
 
-    let disX = x 
-    let disY = y 
+    let disX = x
+    let disY = y
     if (disX < 0 + this.player.width / 2)
       disX = this.player.width / 2
 

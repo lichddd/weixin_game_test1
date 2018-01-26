@@ -34,18 +34,12 @@ export default class Bullet {
       sprite.height = BULLET_HEIGHT * 0.3;
       sprite.angel = (i - num/2) / num;
       sprite.speed = speed;
-
-      
+      sprite.isdie=false;
+      sprite.diecount=0;
       sprite.die = sprite.die||(() => {
-        this.list = this.list.filter((s) => {
-          if (s === sprite) {
-            this.deletelist.push(s);
-            s.visible = false;
-            // this.cantiner.removeChild(s);
-            return false;
-          }
-          return true;
-        });
+        sprite.isdie=true;
+        sprite.gotoAndPlay('die');
+
       });
       this.deletelist.length > 0 ?(sprite.visible = true):this.cantiner.addChild(sprite);
       this.list.push(sprite);
@@ -54,13 +48,31 @@ export default class Bullet {
   }
   update(test) {
     this.list = this.list.filter((s) => {
+      if(s.isdie)
+      {
+        s.diecount++;
+        // if(s.diecount<5)
+        // {
+        //   s.y += Math.cos(s.angel * PIp2) * s.speed;
+        //   s.x += Math.sin(s.angel * PIp2) * s.speed;
+        // }
+        if(s.diecount>(1))
+        {
+          this.deletelist.push(s);
+          s.visible = false;
+          return false;
+        }
+        return true;
+      }
+
+
       s.y -= s.speed;
       // s.y -= Math.cos(s.angel * PIp2) * s.speed;
       // s.x += Math.sin(s.angel * PIp2) * s.speed;
 
       if(test)
       {
-      if (s.y < 0 || s.x > window.innerWidth || s.x < 0) {
+      if (s.y < 0 || s.x > window.innerWidth+100 || s.x < -100) {
         this.deletelist.push(s);
         s.visible = false;
         return false;

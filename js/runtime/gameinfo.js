@@ -4,10 +4,11 @@ const screenHeight = window.innerHeight
 let atlas = new Image()
 atlas.src = 'images/Common.png'
 
-export default class GameInfo {
+export default class GameInfo extends createjs.Container{
   constructor(cantiner){
-    this.cantiner=cantiner;
-    this.score = new createjs.Text(`得分:0`, "16px  Arial", "#FFF");
+    super();
+    this.cantiner=this;
+    this.score = new createjs.Text(`打中:0 被打中:0`, "16px  Arial", "#FFF");
     this.score.x = (10);
     this.score.y = (10);
     this.cantiner.addChild(this.score);
@@ -23,9 +24,9 @@ export default class GameInfo {
       30
     )
   }
-  updateScore(s){
+  updateScore(s,f){
 
-    this.score.text = `得分:${s}`;
+    this.score.text = `打中:${s} 被打中:${f}`;
 
   }
   renderGameOver(ctx, score) {
@@ -72,4 +73,3 @@ export default class GameInfo {
     }
   }
 }
-
