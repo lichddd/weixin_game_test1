@@ -5,16 +5,18 @@ const screenHeight = window.innerHeight
 
 // 玩家相关常量设置
 const PLAYER_IMG_SRC = 'images/hero.png'
-const PLAYER_WIDTH = 186
-const PLAYER_HEIGHT = 130
-
+const PLAYER_WIDTH = 64
+const PLAYER_HEIGHT = 64
+const SCALE = 1
 
 export default class Player extends createjs.Container {
-  constructor(cantiner,shootnum=10) {
+  constructor(cantiner,headurl=PLAYER_IMG_SRC,shootnum=10) {
     super();
     this.cantiner = this;
+    headurl=headurl?headurl.replace(/\/[0-9]{1,3}$/,"/64"):PLAYER_IMG_SRC;
+    console.log(headurl);
     this.spriteSheetPlayer = new createjs.SpriteSheet({
-      images: [PLAYER_IMG_SRC],
+      images: [headurl],
       frames: { width: PLAYER_WIDTH, height: PLAYER_HEIGHT, regX: PLAYER_WIDTH / 2, regY: PLAYER_HEIGHT / 2 },
       animations: {
         // play: [0,0,"play",0.2]
@@ -22,14 +24,22 @@ export default class Player extends createjs.Container {
     });
     this.player = new createjs.Sprite(this.spriteSheetPlayer, "play");
 
+    this.maskshape = new createjs.Shape();
+    this.maskshape.graphics.beginFill("#fff").drawCircle(0, 0, PLAYER_WIDTH/2);
+    this.player.mask=this.maskshape;
     this.player.y = screenHeight -  30;
     this.player.speedx=0;
     this.player.speedy = 0;
     this.player.x = screenWidth / 2 ;
-    this.player.scaleX = 0.3;
-    this.player.scaleY = 0.3;
-    this.player.width = PLAYER_WIDTH*0.3;
-    this.player.height = PLAYER_HEIGHT*0.3;
+    this.maskshape.x=this.player.x;
+    this.maskshape.y=this.player.y;
+    this.maskshape.scaleX = SCALE;
+    this.maskshape.scaleY = SCALE;
+
+    this.player.scaleX = SCALE;
+    this.player.scaleY = SCALE;
+    this.player.width = PLAYER_WIDTH*SCALE;
+    this.player.height = PLAYER_HEIGHT*SCALE;
     this.cantiner.addChild(this.player);
 
     this.bullet = new Bullet(this.cantiner);
@@ -49,6 +59,8 @@ export default class Player extends createjs.Container {
   update(test){
     this.player.x += this.player.speedx;
     this.player.y += this.player.speedy;
+    this.maskshape.x = this.player.x;
+    this.maskshape.y = this.player.y;
     this.setAirPosAcrossFingerPosZ(this.player.x, this.player.y);
     this.bullet.update(test);
   }

@@ -1,5 +1,7 @@
 const PIp2 = Math.PI / 2;
-
+const SHOOT_FRAME=10
+const SHOOT_SPEED=4
+const SHOOT_NUM=30
 const ENEMY_IMG_SRC = 'images/ball.png'
 const ENEMY_DIE_IMG_SRCs = [
   'images/explosion1.png',
@@ -29,6 +31,7 @@ const SCALE_TO_DIE = 2
 export default class Enemy {
   constructor(cantiner) {
     this.cantiner=cantiner;
+    this.shoot_frame=SHOOT_FRAME;
     this.spriteSheet = new createjs.SpriteSheet({
       images: [ENEMY_IMG_SRC, ...ENEMY_DIE_IMG_SRCs],
       frames:
@@ -71,10 +74,12 @@ export default class Enemy {
     this.deletelist = [];
     this.y = 0;
     this.x = 0;
+    this.ang_count=0;
     this.type=1;
   }
-  shoot(x,y,speed, ang, num) {
-
+  shoot(x,y,speed=SHOOT_SPEED,num=SHOOT_NUM,ang=0) {
+    ang=this.ang_count%2*0.1 -0.05;
+    this.ang_count++;
     for (let i = 0; i < num; i++) {
       let isnew = true;
       let sprite = this.deletelist.length > 0 ? (isnew=false,this.deletelist.shift()) : new createjs.Sprite(this.spriteSheet, `play${this.type}`);

@@ -1,4 +1,7 @@
 const PIp2 = Math.PI / 2;
+const SHOOT_FRAME=30
+const SHOOT_SPEED=2
+const SHOOT_NUM=10
 
 const ENEMY_IMG_SRC = 'images/magic_dm.png'
 
@@ -9,6 +12,7 @@ const SCALE_TO_DIE = 2
 export default class Enemy {
   constructor(cantiner) {
     this.cantiner=cantiner;
+    this.shoot_frame=SHOOT_FRAME;
     this.spriteSheet = new createjs.SpriteSheet({
       images: [ENEMY_IMG_SRC],
       frames:
@@ -25,8 +29,12 @@ export default class Enemy {
     this.deletelist = [];
     this.y = 0;
     this.x = 0;
+
+    this.ang_count=0;
   }
-  shoot(x,y,speed, ang, num) {
+  shoot(x,y,speed=SHOOT_SPEED,num=SHOOT_NUM,ang=0) {
+    ang=this.ang_count%2*0.1 -0.05;
+    this.ang_count++;
     for (let i = 0; i < num; i++) {
       let isnew = true;
       let sprite = this.deletelist.length > 0 ? (isnew=false,this.deletelist.shift()) : new createjs.Sprite(this.spriteSheet, "play");

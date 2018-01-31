@@ -1,7 +1,9 @@
 const PIp2 = Math.PI / 2;
 
 const ENEMY_IMG_SRC = 'images/beam.png'
-
+const SHOOT_FRAME=30
+const SHOOT_SPEED=10
+const SHOOT_NUM=6
 const ENEMY_WIDTH = 16
 const ENEMY_HEIGHT = 256
 const SCALE = 0.5
@@ -9,6 +11,7 @@ const READY = 30
 export default class Enemy {
   constructor(cantiner) {
     this.cantiner=cantiner;
+    this.shoot_frame=SHOOT_FRAME;
     this.spriteSheet = new createjs.SpriteSheet({
       images: [ENEMY_IMG_SRC],
       frames:
@@ -57,7 +60,7 @@ export default class Enemy {
     this.x = 0;
     this.type=1;
   }
-  shoot(x,y,speed, ang, num) {
+  shoot(x,y,speed=SHOOT_SPEED,num=SHOOT_NUM) {
 
     let pp={x:window.main.player.player.x,y:window.main.player.player.y};
     for (let i = 0; i < num; i++) {

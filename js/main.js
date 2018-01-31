@@ -5,7 +5,6 @@ import BackGround from './runtime/background'
 import GameInfo   from './runtime/gameinfo'
 import Music      from './runtime/music'
 
-let ctx   = canvas.getContext('2d')
 const screenWidth = window.innerWidth
 const screenHeight = window.innerHeight
 /**
@@ -23,9 +22,26 @@ export default class Main {
     // createjs.Ticker.addEventListener("tick", this.TimerHandel.bind(this));
     this.stage = new createjs.Stage(canvas);
     // this.stage.updateViewport(screenWidth, screenHeight);
+    wx.getUserInfo({
+        success: (res)=> {
+            let user_info=res.userInfo;
+            console.log(res);
+            this.init(user_info);
+        },
+        fail:()=>{
+
+            this.init();
+
+        }
+    })
+
+
+  }
+  init(user_info=""){
+
     this.bg = new BackGround(this.stage);
     this.stage.addChild(this.bg);
-    this.player = new Player(this.stage,10);
+    this.player = new Player(this.stage,user_info.avatarUrl,10);
     this.stage.addChild(this.player);
     this.boss = new Boss(this.stage,30);
     this.stage.addChild(this.boss);
@@ -33,23 +49,20 @@ export default class Main {
     this.stage.addChild(this.gameinfo);
 
 
-    // this.restart()
-    this.TimerHandel();
+
+
+    window.requestAnimationFrame(
+      this.TimerHandel.bind(this),
+      canvas
+    )
+
   }
   TimerHandel() {
     this.frame++;
     if(this.frame>999999999){
       this.frame=0;
     }
-    if (this.frame%20===0) {
-      this.boss.shoot();
-    }
-    if (this.frame%60===0) {
-      this.boss.shoot_magic();
-    }
-    if (this.frame%120===0) {
-      this.boss.shoot_beam();
-    }
+
     if (this.frame % 30 === 0) {
       this.player.shoot();
       this.music.playShoot();
@@ -83,30 +96,21 @@ export default class Main {
     let pp={x:this.player.player.x,y:this.player.player.y};
     let br={x:this.boss.player.x,y:this.boss.player.y,width:this.boss.player.width,height:this.boss.player.height};
 
-    this.player.bullet.list.filter((bu) => {
+    this.player.bullet.list.forEach((bu) => {
       if ( this.isCollideWith(br,bu)&&!bu.isdie) {
         bu.die();
         this.score += 1;
       }
     });
-    this.boss.bullet.list.filter((bu) => {
-      if ( this.isCollideWith(bu,pp)&&!bu.isdie) {
-        bu.die();
-        this.defance += 1;
-      }
-    })
-    this.boss.magic_dm.list.filter((bu) => {
-      if ( this.isCollideWith(bu,pp)&&!bu.isdie) {
-        bu.die();
-        this.defance += 1;
-      }
-    })
-    this.boss.beam.list.filter((bu) => {
-      if ( this.isCollideWith(bu,pp)&&!bu.isdie) {
-        bu.die();
-        this.defance += 1;
-      }
-    })
+    this.boss.bullets.forEach((bu) => {
+      bu.list.forEach((b) => {
+        if ( this.isCollideWith(b,pp)&&!b.isdie) {
+          b.die();
+          this.defance += 1;
+        }
+      });
+    });
+
   }
 
 
