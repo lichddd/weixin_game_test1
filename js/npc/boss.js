@@ -1,5 +1,5 @@
 
-import Bullet from './enemy'
+import Bullet from './bullet'
 import Magic_DM from './magic_dm'
 import Beam from './beam'
 const screenWidth = window.innerWidth
@@ -10,9 +10,8 @@ const PLAYER_IMG_SRC = 'images/boss.png'
 const PLAYER_WIDTH = 80
 const PLAYER_HEIGHT = 110
 
-
 export default class Boss extends createjs.Container {
-  constructor(cantiner,shootnum=10) {
+  constructor(cantiner) {
     super();
     this.cantiner = this;
     this.bullets=[];
@@ -23,7 +22,6 @@ export default class Boss extends createjs.Container {
         [81, 0, PLAYER_WIDTH, PLAYER_HEIGHT, 0, PLAYER_WIDTH / 2, PLAYER_HEIGHT / 2],
         [161, 0, PLAYER_WIDTH, PLAYER_HEIGHT, 0, PLAYER_WIDTH / 2, PLAYER_HEIGHT / 2],
         [241, 0, PLAYER_WIDTH, PLAYER_HEIGHT, 0, PLAYER_WIDTH / 2, PLAYER_HEIGHT / 2],
-
 
         [0, 110, PLAYER_WIDTH, PLAYER_HEIGHT, 0, PLAYER_WIDTH / 2, PLAYER_HEIGHT / 2],
         [80, 110, PLAYER_WIDTH, PLAYER_HEIGHT, 0, PLAYER_WIDTH / 2, PLAYER_HEIGHT / 2],
@@ -48,46 +46,17 @@ export default class Boss extends createjs.Container {
     this.cantiner.addChild(this.player);
 
     this.bullets.push(new Bullet(this.cantiner));
-    // this.bullet = new Bullet(this.cantiner);
     this.bullets.push(new Magic_DM(this.cantiner));
-    // this.magic_dm = new Magic_DM(this.cantiner);
     this.bullets.push(new Beam(this.cantiner));
-    // this.beam = new Beam(this.cantiner);
-    // 用于在手指移动的时候标识手指是否已经在飞机上了
-
-    this.shootnum=shootnum;
-
   }
   update(test){
     this.player.x += this.player.speedx;
     this.player.y += this.player.speedy;
-
-
     this.bullets.forEach((b)=>{
       if ((window.main.frame%b.shoot_frame===0)) {
         b.shoot(this.player.x,this.player.y+30);
       }
       b.update(test);
-
     })
-    // this.bullet.update(test);
-    // this.magic_dm.update(test);
-    // this.beam.update(test);
   }
-
-
-
-
-  // shoot_beam() {
-  //   // this.player.gotoAndPlay('shoot');
-  //   this.beam.shoot(this.player.x,this.player.y+30,10,window.main.frame%40/200-0.05,this.shootnum/5);
-  // }
-  // shoot() {
-  //   // this.player.gotoAndPlay('shoot');
-  //   this.bullet.shoot(this.player.x,this.player.y+30,4,window.main.frame%40/200-0.05,this.shootnum);
-  // }
-  // shoot_magic() {
-  //   // this.player.gotoAndPlay('shoot');
-  //   this.magic_dm.shoot(this.player.x,this.player.y+30,2,window.main.frame%120/600-0.05,Math.ceil(this.shootnum/2));
-  // }
 }

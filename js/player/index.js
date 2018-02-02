@@ -8,9 +8,10 @@ const PLAYER_IMG_SRC = 'images/hero.png'
 const PLAYER_WIDTH = 64
 const PLAYER_HEIGHT = 64
 const SCALE = 1
-
+const SHOOT_SPEED = 5
+const SHOOT_NUM = 5
 export default class Player extends createjs.Container {
-  constructor(cantiner,headurl=PLAYER_IMG_SRC,shootnum=10) {
+  constructor(cantiner,headurl=PLAYER_IMG_SRC) {
     super();
     this.cantiner = this;
     headurl=headurl?headurl.replace(/\/[0-9]{1,3}$/,"/64"):PLAYER_IMG_SRC;
@@ -46,12 +47,10 @@ export default class Player extends createjs.Container {
     // 用于在手指移动的时候标识手指是否已经在飞机上了
     this.touched = false
 
-    this.shootnum=shootnum;
     // 初始化事件监听
     this.initEvent();
     wx.startAccelerometer({ success:()=>{console.log('开始监听加速计')}});
     wx.onAccelerometerChange((res)=>{
-
       this.player.speedx = Math.floor(res.x*100)/10;
       this.player.speedy = Math.floor(-res.y * 100)/10;
     })
@@ -150,6 +149,6 @@ export default class Player extends createjs.Container {
    * 射击时机由外部决定
    */
   shoot() {
-    this.bullet.shoot(4,this.player.x,this.player.y,this.shootnum);
+    this.bullet.shoot(SHOOT_SPEED,this.player.x,this.player.y,SHOOT_NUM);
   }
 }
