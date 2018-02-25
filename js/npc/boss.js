@@ -17,17 +17,19 @@ export default class Boss extends createjs.Container {
     this.bullets=[];
     this.spriteSheetPlayer = new createjs.SpriteSheet({
       images: [PLAYER_IMG_SRC],
-      frames: [
-        [2, 0, PLAYER_WIDTH, PLAYER_HEIGHT, 0, PLAYER_WIDTH / 2, PLAYER_HEIGHT / 2],
-        [81, 0, PLAYER_WIDTH, PLAYER_HEIGHT, 0, PLAYER_WIDTH / 2, PLAYER_HEIGHT / 2],
-        [161, 0, PLAYER_WIDTH, PLAYER_HEIGHT, 0, PLAYER_WIDTH / 2, PLAYER_HEIGHT / 2],
-        [241, 0, PLAYER_WIDTH, PLAYER_HEIGHT, 0, PLAYER_WIDTH / 2, PLAYER_HEIGHT / 2],
+      frames: Math.getArray(8).map((l) => {
+          return [
+              80 * (l%4),
+              110 * Math.floor(l / 4),
+              PLAYER_WIDTH,
+              PLAYER_HEIGHT,
+              0,
+              PLAYER_WIDTH / 2,
+              PLAYER_HEIGHT / 2
+          ];
+      })
 
-        [0, 110, PLAYER_WIDTH, PLAYER_HEIGHT, 0, PLAYER_WIDTH / 2, PLAYER_HEIGHT / 2],
-        [80, 110, PLAYER_WIDTH, PLAYER_HEIGHT, 0, PLAYER_WIDTH / 2, PLAYER_HEIGHT / 2],
-        [160, 110, PLAYER_WIDTH, PLAYER_HEIGHT, 0, PLAYER_WIDTH / 2, PLAYER_HEIGHT / 2],
-        [240, 110, PLAYER_WIDTH, PLAYER_HEIGHT, 0, PLAYER_WIDTH / 2, PLAYER_HEIGHT / 2],
-      ],
+      ,
       animations: {
         play: [0,3,"play",4/30],
         shoot: [4,7,"play",8/30],
@@ -55,6 +57,9 @@ export default class Boss extends createjs.Container {
     this.bullets.forEach((b)=>{
       if ((window.main.frame%b.shoot_frame===0)) {
         b.shoot(this.player.x,this.player.y+30);
+        if (b instanceof Beam) {
+          this.player.gotoAndPlay('shoot');
+        }
       }
       b.update(test);
     })

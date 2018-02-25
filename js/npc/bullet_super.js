@@ -1,12 +1,14 @@
 export default class Bullet_Super {
 
-    constructor(cantiner, SHOOT_FRAME = 10) {
+    constructor(cantiner, SHOOT_FRAME = 10,sprite_sheet) {
         this.cantiner = cantiner;
         this.shoot_frame = SHOOT_FRAME;
         this.list = [];
         this.deletelist = [];
         this.y = 0;
         this.x = 0;
+
+        this.spriteSheet = new createjs.SpriteSheet(sprite_sheet);
     }
     outOfScreen(s, test) {
         if (test) {

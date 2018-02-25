@@ -13,8 +13,7 @@ const SCALE_TO_DIE = 2
 const DIEING_FRAME=40
 export default class Bullet extends Bullet_Super {
     constructor(cantiner) {
-        super(cantiner, SHOOT_FRAME);
-        this.spriteSheet = new createjs.SpriteSheet({
+        super(cantiner, SHOOT_FRAME,{
             images: [ENEMY_IMG_SRC],
             frames: Math.getArray(5).map((l) => {
                 return [
