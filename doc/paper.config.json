@@ -1,0 +1,11 @@
+{
+  "alias": {},
+  "title": "微信小游戏",
+  "docPath": "/",
+  "output": "dist",
+  "theme": "element",
+  "miniMap": false,
+  "backToTop": false,
+  "indicator": true,
+  "expandAll": false
+}
